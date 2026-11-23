@@ -1,4 +1,4 @@
-/* global Phaser, COIN_DASH, CoinDashSound */
+/* global Phaser, COIN_DASH, CoinDashSound, CoinDashThemes */
 // Survives scene.restart(), so R keeps the chosen difficulty.
 let difficulty = 'normal';
 const BEST_KEY = 'coinDash.best';
@@ -31,21 +31,17 @@ class CoinDash extends Phaser.Scene {
     this.paused = false;
     this.deadline = this.time.now + c.roundSeconds * 1000;
     this.physics.world.setBounds(0, 44, c.width, c.height - 44);
-    this.add.grid(c.width / 2, c.height / 2, c.width, c.height, 40, 40,
-      c.colors.background, 1, 0x24334b, 0.45);
+    CoinDashThemes.makeBackground(this);
     this.hud = this.add.text(18, 12, '', { font: '18px monospace', color: '#ffffff' });
-    this.player = this.add.rectangle(c.width / 2, c.height / 2, 24, 24, c.colors.player);
-    this.physics.add.existing(this.player);
+    this.player = CoinDashThemes.makePlayer(this, c.width / 2, c.height / 2);
     this.player.body.setCollideWorldBounds(true);
-    this.coin = this.add.circle(100, 100, 9, c.colors.coin);
-    this.physics.add.existing(this.coin);
-    this.coin.body.setCircle(9);
+    this.coin = CoinDashThemes.makeCoin(this, 100, 100);
     this.placeCoin();
     this.drones = this.physics.add.group();
     // Spread drones evenly between x = 90 and x = width - 90.
     const spacing = (c.width - 180) / Math.max(1, preset.droneCount - 1);
     for (let i = 0; i < preset.droneCount; i++) {
-      const drone = this.add.rectangle(90 + i * spacing, 100, 26, 26, c.colors.drone);
+      const drone = CoinDashThemes.makeDrone(this, 90 + i * spacing, 100);
       this.drones.add(drone);
       drone.body.setCollideWorldBounds(true).setBounce(1, 1);
       const angle = (35 + i * 105) * Math.PI / 180;
@@ -68,6 +64,7 @@ class CoinDash extends Phaser.Scene {
       });
     });
     this.input.keyboard.on('keydown-M', () => CoinDashSound.toggleMute());
+    CoinDashThemes.attach(this);
     this.input.keyboard.on('keydown-P', () => this.togglePause());
     this.input.keyboard.on('keydown-ESC', () => this.togglePause());
   }
