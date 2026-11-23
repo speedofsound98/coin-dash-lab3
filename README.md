@@ -47,4 +47,5 @@ https://docs.phaser.io/phaser/getting-started/making-your-first-phaser-game
 
 ## Team
 
+- Nadav (laptop A)
 - Nadav (laptop B, partner stand-in)
