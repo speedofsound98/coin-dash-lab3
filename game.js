@@ -1,4 +1,4 @@
-/* global Phaser, COIN_DASH */
+/* global Phaser, COIN_DASH, CoinDashThemes */
 class CoinDash extends Phaser.Scene {
   constructor() { super('CoinDash'); }
 
@@ -8,19 +8,15 @@ class CoinDash extends Phaser.Scene {
     this.finished = false;
     this.deadline = this.time.now + c.roundSeconds * 1000;
     this.physics.world.setBounds(0, 44, c.width, c.height - 44);
-    this.add.grid(c.width / 2, c.height / 2, c.width, c.height, 40, 40,
-      c.colors.background, 1, 0x24334b, 0.45);
+    CoinDashThemes.makeBackground(this);
     this.hud = this.add.text(18, 12, '', { font: '18px monospace', color: '#ffffff' });
-    this.player = this.add.rectangle(c.width / 2, c.height / 2, 24, 24, c.colors.player);
-    this.physics.add.existing(this.player);
+    this.player = CoinDashThemes.makePlayer(this, c.width / 2, c.height / 2);
     this.player.body.setCollideWorldBounds(true);
-    this.coin = this.add.circle(100, 100, 9, c.colors.coin);
-    this.physics.add.existing(this.coin);
-    this.coin.body.setCircle(9);
+    this.coin = CoinDashThemes.makeCoin(this, 100, 100);
     this.placeCoin();
     this.drones = this.physics.add.group();
     for (let i = 0; i < c.droneCount; i++) {
-      const drone = this.add.rectangle(90 + i * 270, 100, 26, 26, c.colors.drone);
+      const drone = CoinDashThemes.makeDrone(this, 90 + i * 270, 100);
       this.drones.add(drone);
       drone.body.setCollideWorldBounds(true).setBounce(1, 1);
       const angle = (35 + i * 105) * Math.PI / 180;
@@ -35,6 +31,7 @@ class CoinDash extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('W,A,S,D,R');
     this.input.keyboard.on('keydown-R', () => this.scene.restart());
+    CoinDashThemes.attach(this);
   }
 
   placeCoin() {
